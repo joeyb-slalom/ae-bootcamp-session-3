@@ -44,6 +44,29 @@ input {
   border-radius: 4px;
 }
 
+/* Priority radio-like toggle buttons */
+.priority-chip {
+  height: 22px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  background-color: #7A7A7A;
+}
+
+.priority-chip.selected {
+  background-color: #07F2E6;
+}
+
+.priority-chip:hover {
+  background-color: #5a5a5a;
+}
+
+.priority-chip.selected:hover {
+  background-color: #05d9ce;
+}
+
 button {
   padding: 8px 16px;
   background-color: #61dafb;

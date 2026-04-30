@@ -5,6 +5,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
+import './App.css';
 
 const PRIORITY_OPTIONS = [
   { label: 'P1', color: '#07F2E6' },
@@ -229,18 +230,7 @@ function TaskList({ onEdit }) {
                     label={option.label}
                     size="small"
                     onClick={() => handlePriorityChange(task, option.label)}
-                    sx={{
-                      height: 22,
-                      fontSize: '0.7rem',
-                      fontWeight: 700,
-                      backgroundColor: task.priority === option.label ? '#07F2E6' : '#7A7A7A',
-                      color: 'white',
-                      cursor: 'pointer',
-                      letterSpacing: '0.5px',
-                      '&:hover': {
-                        backgroundColor: task.priority === option.label ? '#05d9ce' : '#5a5a5a',
-                      }
-                    }}
+                    className={`priority-chip${task.priority === option.label ? ' selected' : ''}`}
                   />
                 ))}
               </Box>
