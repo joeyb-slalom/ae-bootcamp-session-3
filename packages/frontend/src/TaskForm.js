@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Paper, Typography, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { TextField, Button, Paper, Typography, Box } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
-
-const PRIORITY_COLORS = {
-  P1: '#f44336',
-  P2: '#ff9800',
-  P3: '#9e9e9e',
-};
-
-const PRIORITY_OPTIONS = [
-  { value: 'P1', label: 'P1 — High', color: '#f44336' },
-  { value: 'P2', label: 'P2 — Medium', color: '#ff9800' },
-  { value: 'P3', label: 'P3 — Low', color: '#9e9e9e' },
-];
 
 function TaskForm({ onSave, initialTask }) {
   const [title, setTitle] = useState(initialTask?.title || '');
@@ -66,10 +54,6 @@ function TaskForm({ onSave, initialTask }) {
     setPriority('P3');
   };
 
-  const handlePriorityChange = (value) => {
-    setPriority(value);
-  };
-
   return (
     <Paper 
       elevation={0}
@@ -117,31 +101,23 @@ function TaskForm({ onSave, initialTask }) {
             }
           }}
         />
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          {PRIORITY_OPTIONS.map(option => (
-            <Button
-              key={option.value}
-              onClick={() => handlePriorityChange(option.value)}
-              variant={priority === option.value ? 'contained' : 'outlined'}
-              sx={{
-                backgroundColor: priority === option.value ? option.color : 'transparent',
-                color: priority === option.value ? '#fff' : option.color,
-                borderColor: option.color,
-                '&:hover': {
-                  backgroundColor: option.color,
-                  color: '#fff',
-                },
-                textTransform: 'none',
-                fontWeight: 600,
-                borderRadius: 2,
-                flex: 1,
-                mx: 0.5
-              }}
-            >
-              {option.label}
-            </Button>
-          ))}
-        </Box>
+        <TextField
+          id="task-description"
+          label="Description"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          variant="outlined"
+          fullWidth
+          size="small"
+          inputProps={{ 'data-testid': 'description-input' }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              borderRadius: 2,
+              '&:hover fieldset': { borderColor: '#1976d2' },
+              '&.Mui-focused fieldset': { borderColor: '#1976d2' }
+            }
+          }}
+        />
         {error && <Typography color="error" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>{error}</Typography>}
         <Box display="flex" gap={2}>
           <Button 
