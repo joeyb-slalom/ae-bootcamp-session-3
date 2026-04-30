@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  List, ListItem, ListItemText, IconButton, Checkbox, Typography, Box, CircularProgress, Paper, Chip
+  List, ListItem, ListItemText, IconButton, Checkbox, Typography, Box, CircularProgress, Chip, Paper
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
+
+const PRIORITY_OPTIONS = [
+  { label: 'P1', color: '#07F2E6' },
+  { label: 'P2', color: '#07F2E6' },
+  { label: 'P3', color: '#07F2E6' },
+];
 
 function TaskList({ onEdit }) {
   const [tasks, setTasks] = useState([]);
@@ -33,7 +39,7 @@ function TaskList({ onEdit }) {
       const response = await fetch('/api/tasks');
       if (!response.ok) throw new Error('Failed to fetch tasks');
       const data = await response.json();
-      setTasks(data);
+      setTasks(data.map(task => ({ ...task, priority: task.priority || 'P3' })));
       setError(null);
     } catch (err) {
       setError(err.message);
@@ -52,6 +58,19 @@ function TaskList({ onEdit }) {
       fetchTasks();
     } catch (err) {
       setError('Failed to update task');
+    }
+  };
+
+  const handlePriorityChange = async (task, newPriority) => {
+    try {
+      await fetch(`/api/tasks/${task.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priority: newPriority })
+      });
+      setTasks(prevTasks => prevTasks.map(t => t.id === task.id ? { ...t, priority: newPriority } : t));
+    } catch (err) {
+      setError('Failed to update priority');
     }
   };
 
@@ -203,20 +222,28 @@ function TaskList({ onEdit }) {
                 gap: 1
               }}
             >
-              {task.priority && (
-                <Chip
-                  label={task.priority}
-                  size="small"
-                  sx={{
-                    height: 20,
-                    fontSize: '0.7rem',
-                    fontWeight: 700,
-                    backgroundColor: task.priority === 'P1' ? '#f44336' : task.priority === 'P2' ? '#ff9800' : '#9e9e9e',
-                    color: 'white',
-                    letterSpacing: '0.5px',
-                  }}
-                />
-              )}
+              <Box sx={{ display: 'flex', gap: 0.5 }}>
+                {PRIORITY_OPTIONS.map(option => (
+                  <Chip
+                    key={option.label}
+                    label={option.label}
+                    size="small"
+                    onClick={() => handlePriorityChange(task, option.label)}
+                    sx={{
+                      height: 22,
+                      fontSize: '0.7rem',
+                      fontWeight: 700,
+                      backgroundColor: task.priority === option.label ? '#07F2E6' : '#7A7A7A',
+                      color: 'white',
+                      cursor: 'pointer',
+                      letterSpacing: '0.5px',
+                      '&:hover': {
+                        backgroundColor: task.priority === option.label ? '#05d9ce' : '#5a5a5a',
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
               {task.due_date && (
                 <Chip
                   icon={<EventIcon sx={{ fontSize: 14 }} />}

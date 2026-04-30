@@ -9,6 +9,12 @@ const PRIORITY_COLORS = {
   P3: '#9e9e9e',
 };
 
+const PRIORITY_OPTIONS = [
+  { value: 'P1', label: 'P1 — High', color: '#f44336' },
+  { value: 'P2', label: 'P2 — Medium', color: '#ff9800' },
+  { value: 'P3', label: 'P3 — Low', color: '#9e9e9e' },
+];
+
 function TaskForm({ onSave, initialTask }) {
   const [title, setTitle] = useState(initialTask?.title || '');
   const [description, setDescription] = useState(initialTask?.description || '');
@@ -60,6 +66,10 @@ function TaskForm({ onSave, initialTask }) {
     setPriority('P3');
   };
 
+  const handlePriorityChange = (value) => {
+    setPriority(value);
+  };
+
   return (
     <Paper 
       elevation={0}
@@ -107,81 +117,31 @@ function TaskForm({ onSave, initialTask }) {
             }
           }}
         />
-        <TextField
-          id="task-description"
-          label="Description"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          multiline
-          minRows={2}
-          variant="outlined"
-          fullWidth
-          size="small"
-          inputProps={{ 'data-testid': 'description-input' }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
-              '&:hover fieldset': {
-                borderColor: '#1976d2',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
-              }
-            }
-          }}
-        />
-        <TextField
-          id="task-due-date"
-          label="Due Date"
-          type="date"
-          value={dueDate}
-          onChange={e => setDueDate(e.target.value)}
-          variant="outlined"
-          fullWidth
-          size="small"
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ 'data-testid': 'due-date-input' }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
-              '&:hover fieldset': {
-                borderColor: '#1976d2',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
-              }
-            }
-          }}
-        />
-        <FormControl fullWidth size="small" variant="outlined">
-          <InputLabel id="priority-label">Priority</InputLabel>
-          <Select
-            labelId="priority-label"
-            id="task-priority"
-            value={priority}
-            label="Priority"
-            onChange={e => setPriority(e.target.value)}
-            inputProps={{ 'data-testid': 'priority-select' }}
-            sx={{
-              borderRadius: 2,
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: PRIORITY_COLORS[priority],
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: PRIORITY_COLORS[priority],
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: PRIORITY_COLORS[priority],
-              },
-              color: PRIORITY_COLORS[priority],
-              fontWeight: 600,
-            }}
-          >
-            <MenuItem value="P1" sx={{ color: PRIORITY_COLORS.P1, fontWeight: 600 }}>P1 — High</MenuItem>
-            <MenuItem value="P2" sx={{ color: PRIORITY_COLORS.P2, fontWeight: 600 }}>P2 — Medium</MenuItem>
-            <MenuItem value="P3" sx={{ color: PRIORITY_COLORS.P3, fontWeight: 600 }}>P3 — Low</MenuItem>
-          </Select>
-        </FormControl>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          {PRIORITY_OPTIONS.map(option => (
+            <Button
+              key={option.value}
+              onClick={() => handlePriorityChange(option.value)}
+              variant={priority === option.value ? 'contained' : 'outlined'}
+              sx={{
+                backgroundColor: priority === option.value ? option.color : 'transparent',
+                color: priority === option.value ? '#fff' : option.color,
+                borderColor: option.color,
+                '&:hover': {
+                  backgroundColor: option.color,
+                  color: '#fff',
+                },
+                textTransform: 'none',
+                fontWeight: 600,
+                borderRadius: 2,
+                flex: 1,
+                mx: 0.5
+              }}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </Box>
         {error && <Typography color="error" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>{error}</Typography>}
         <Box display="flex" gap={2}>
           <Button 
